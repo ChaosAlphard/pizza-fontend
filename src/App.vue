@@ -1,12 +1,14 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+<template><div id="app">
+
+  <div class="container">
+    <nav-header/>
+  </div>
+
+  <div class="container">
     <router-view/>
   </div>
-</template>
+
+</div></template>
 
 <style>
 #app {
@@ -29,3 +31,14 @@
   color: #42b983;
 }
 </style>
+
+<script lang="ts">
+import Vue from 'vue'
+import NavHeader from './components/NavHeader.vue'
+export default Vue.extend({
+  components: {
+    NavHeader
+  }
+})
+</script>
+
