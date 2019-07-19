@@ -1,47 +1,59 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import Router, {Route} from 'vue-router'
 
-// 一级路由
-import Home from './components/Home.vue'
-import Menu from './components/Menu.vue'
-import Admin from './components/Admin.vue'
-import About from './components/about/About.vue'
-import Login from './components/Login.vue'
-import Register from './components/Register.vue'
+// 一级路由组件
+import Home from '@/views/Home.vue'
+import Menu from '@/views/Menu.vue'
+import Admin from '@/views/Admin.vue'
+// import About from './views/About.vue'
+import Login from '@/views/Login.vue'
+import Register from '@/views/Register.vue'
 
-// 二级路由
-import History from './components/about/History.vue'
+// 二级路由组件
+import Contact from '@/components/about/Contact.vue'
+import Delivery from '@/components/about/Delivery.vue'
+import Guide from '@/components/about/Guide.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router: Router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      // component: Home
+      components: {
+        default: Home,
+        'Guide': Guide,
+        'Contact': Contact,
+        'Delivery': Delivery
+      }
     },{
       path: '/menu',
       name: 'menu',
       component: Menu
     },{
-      path: '/admin',
-      name: 'admin',
-      component: Admin
-    },{
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('./components/about/About.vue'),
-      children: [{
-          path: '/about/history',
-          name: 'history',
-          component: History
-        }]
+      component: () => import('@/views/About.vue'),
+      children: [
+        {
+          path: '/about/contact',
+          name: 'contact',
+          component: Contact
+        },{
+          path: '/about/delivery',
+          name: 'delivery',
+          component: Delivery
+        },{
+          path: '/about/guide',
+          name: 'guide',
+          component: Guide
+        }
+      ],
+      redirect: '/about/contact'
     },{
       path: '/login',
       name: 'login',
@@ -51,8 +63,34 @@ export default new Router({
       name: 'register',
       component: Register
     },{
+      path: '/notfound',
+      name: 'notfound',
+      component: () => import('@/components/NotFound.vue')
+    },{
       path: '*',
-      redirect: '/'
+      redirect: {name: 'notfound'}
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return savedPosition || {x:0,y:0}
+  }
 })
+
+router.beforeEach((to: Route, from: Route, next: Function): void => {
+  const vuexStore = (router as any).app.$options.store
+  const isLogin = vuexStore.getters.isLogin
+  if(isLogin) {
+    if(to.path !== '/login') {
+      next()
+    } else {
+      next('/')
+    }
+  } else if(to.path === '/admin') {
+    vuexStore.dispatch("showAlert", "请先登录")
+    next('/login')
+  } else {
+    next()
+  }
+})
+
+export default router
