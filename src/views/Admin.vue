@@ -82,6 +82,8 @@ export default Vue.extend({
         if(res.data.code === 200) {
           this.$store.dispatch("showAlert", "删除成功")
           this.requestPizza()
+        } else if(res.data.code == 403) {
+          this.$store.dispatch("showAlert", "session过期，刷新页面再试")
         } else {
           this.$store.dispatch("showAlert", `${res.data.code}: ${res.data.msg}`)
         }
