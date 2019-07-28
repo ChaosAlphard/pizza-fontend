@@ -23,7 +23,7 @@ export default Vue.extend({
 
 <style scoped>
 .home {
-  background: url('../assets/pizza.jpg') no-repeat top center / cover;
+  background: url('https://s2.ax1x.com/2019/07/20/ZzTME4.jpg') no-repeat top center / cover;
   height: 70vh;
   padding: 10%;
 }

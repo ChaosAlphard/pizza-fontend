@@ -77,7 +77,7 @@ export default Vue.extend({
       if(!confirm("确定要删除吗？")) {
         return
       }
-      axios.delete('/pizza/delete', {params: {id: id }})
+      axios.delete(`/pizza/delete`, {params: {id: id}})
       .then((res:any)=>{
         if(res.data.code === 200) {
           this.$store.dispatch("showAlert", "删除成功")

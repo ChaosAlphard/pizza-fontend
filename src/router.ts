@@ -4,8 +4,6 @@ import Router, {Route} from 'vue-router'
 // 一级路由组件
 import Home from '@/views/Home.vue'
 import Menu from '@/views/Menu.vue'
-import Admin from '@/views/Admin.vue'
-// import About from './views/About.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 
@@ -18,6 +16,7 @@ Vue.use(Router)
 
 const router: Router = new Router({
   mode: 'history',
+  // mode: 'hash',
   base: process.env.BASE_URL,
   routes: [
     {

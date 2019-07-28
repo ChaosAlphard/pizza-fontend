@@ -23,8 +23,8 @@
     <div class="form-group">
       <div>图片预览(右-缩略)</div>
       <div class="form-control img-pre">
-        <img :src="pizza.picturePreLink">
         <img :src="pizza.pictureLink">
+        <img :src="pizza.picturePreLink">
       </div>
     </div>
 
@@ -71,12 +71,22 @@ export default Vue.extend({
   }),
   methods: {
     addPizza() {
-      if(this.pizza.priceSmall >= this.pizza.priceBig) {
-        this.$store.dispatch("showAlert", '大份的价格应大于小份的价格')
+      try {
+        if(Number(this.pizza.priceSmall) >= Number(this.pizza.priceBig)) {
+          this.$store.dispatch("showAlert", '大份的价格应大于小份的价格')
+          return
+        }
+      } catch(e) {
+        this.$store.dispatch("showAlert", '格式错误')
+        return
+      }
+      if(this.pizza.priceBig > 2147483647) {
+        this.$store.dispatch("showAlert", '数额过大')
         return
       }
       const submit = this.$refs.submit as HTMLButtonElement
       this.temporaryDisableButton(submit, 3000)
+
       axios.put('/pizza/new', this.pizza)
       .then((res:any) => {
         if(res.data.code === 200) {

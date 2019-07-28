@@ -20,34 +20,34 @@
       </div>
 
       <div class="form-group">
-        <div>*缩略图连接</div>
-        <input type="text" class="form-control" v-model="pizza.picturePreLink"
-        placeholder="不超过1024个字符" pattern="^.{1,1024}$">
-      </div>
-
-      <div class="form-group">
         <div>*大图连接</div>
         <input type="text" class="form-control" v-model="pizza.pictureLink"
         placeholder="不超过1024个字符" pattern="^.{1,1024}$">
       </div>
 
       <div class="form-group">
-        <div>图片预览(左-缩略)</div>
-        <div class="form-control img-pre">
-          <img class="img-thumbnail" :src="pizza.picturePreLink">
-          <img class="img-thumbnail" :src="pizza.pictureLink">
-        </div>
+        <div>*缩略图连接</div>
+        <input type="text" class="form-control" v-model="pizza.picturePreLink"
+        placeholder="不超过1024个字符" pattern="^.{1,1024}$">
       </div>
 
       <div class="form-group">
-        <div>*价格(大份)</div>
-        <input type="text" class="form-control" v-model="pizza.priceBig"
-        placeholder="整数" pattern="^[1-9]\d*$">
+        <div>图片预览(右-缩略)</div>
+        <div class="form-control img-pre">
+          <img class="img-thumbnail" :src="pizza.pictureLink">
+          <img class="img-thumbnail" :src="pizza.picturePreLink">
+        </div>
       </div>
 
       <div class="form-group">
         <div>*价格(小份)</div>
         <input type="text" class="form-control" v-model="pizza.priceSmall"
+        placeholder="整数" pattern="^[1-9]\d*$">
+      </div>
+
+      <div class="form-group">
+        <div>*价格(大份)</div>
+        <input type="text" class="form-control" v-model="pizza.priceBig"
         placeholder="整数" pattern="^[1-9]\d*$">
       </div>
 
@@ -110,12 +110,22 @@ export default Vue.extend({
       })
     },
     updatePizza() {
-      if(this.pizza.priceSmall >= this.pizza.priceBig) {
-        this.$store.dispatch("showAlert", '大份的价格应大于小份的价格')
+      try {
+        if(Number(this.pizza.priceSmall) >= Number(this.pizza.priceBig)) {
+          this.$store.dispatch("showAlert", '大份的价格应大于小份的价格')
+          return
+        }
+      } catch(e) {
+        this.$store.dispatch("showAlert", '格式错误')
+        return
+      }
+      if(this.pizza.priceBig > 2147483647) {
+        this.$store.dispatch("showAlert", '数额过大')
         return
       }
       const submit = this.$refs.submit as HTMLButtonElement
       this.temporaryDisableButton(submit)
+
       axios.post('/pizza/edit', this.pizza)
       .then((res:any)=>{
         if(res.data.code === 200) {

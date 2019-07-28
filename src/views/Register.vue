@@ -89,7 +89,8 @@ export default Vue.extend({
       this.temporaryDisableButton(submit,5000)
       this.$store.dispatch("showAlert","正在注册")
 
-      axios.post('/user/register', this.user).then((res:any)=>{
+      axios.post('/user/register', this.user)
+      .then((res:any)=>{
         if(res.data.code===200){
           this.$store.dispatch("showAlert","注册成功")
           this.$router.push({name: 'login'})
